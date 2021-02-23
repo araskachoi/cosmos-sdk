@@ -151,7 +151,7 @@ func (kb baseKeybase) DecodeSignature(info Info, msg []byte) (sig []byte, pub tm
 
 // CreateAccount creates an account Info object.
 func (kb baseKeybase) CreateAccount(
-	keyWriter keyWriter, name, mnemonic, bip39Passphrase, encryptPasswd, hdPath string, algo SigningAlgo,
+	keyWriter keyWriter, name, mnemonic, bip39Passphrase, hdPath string, algo SigningAlgo,
 ) (Info, error) {
 
 	// create master key and derive first key for keyring
@@ -170,8 +170,8 @@ func (kb baseKeybase) CreateAccount(
 
 	var info Info
 
-	if encryptPasswd != "" {
-		info = keyWriter.writeLocalKey(name, privKey, encryptPasswd, algo)
+	if bip39Passphrase != "" {
+		info = keyWriter.writeLocalKey(name, privKey, bip39Passphrase, algo)
 	} else {
 		info = kb.writeOfflineKey(keyWriter, name, privKey.PubKey(), algo)
 	}
@@ -229,9 +229,7 @@ func (kb baseKeybase) CreateMnemonic(
 		passwd = DefaultBIP39Passphrase
 	}
 
-	info, err := ks.NewAccount(uid, mnemonic, bip39Passphrase, hdPath, algo)
-
-	info, err = kb.CreateAccount(keyWriter, name, mnemonic, DefaultBIP39Passphrase, passwd, types.GetConfig().GetFullFundraiserPath(), algo)
+	info, err = kb.CreateAccount(keyWriter, name, mnemonic, DefaultBIP39Passphrase, types.GetConfig().GetFullFundraiserPath(), algo)
 	if err != nil {
 		return nil, "", err
 	}
