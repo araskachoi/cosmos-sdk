@@ -34,7 +34,7 @@ func Test_runExportCmd(t *testing.T) {
 	if runningUnattended {
 		mockIn.Reset("testpass1\ntestpass1\n")
 	}
-	_, err = kb.CreateAccount("keyname1", tests.TestMnemonic, "", "123456789", "", keys.Secp256k1)
+	_, err = kb.CreateAccount("keyname1", tests.TestMnemonic, "", "", keys.Secp256k1)
 	require.NoError(t, err)
 
 	// Now enter password

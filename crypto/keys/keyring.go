@@ -100,10 +100,10 @@ func (kb keyringKeybase) CreateMnemonic(
 // CreateAccount converts a mnemonic to a private key and persists it, encrypted
 // with the given password.
 func (kb keyringKeybase) CreateAccount(
-	name, mnemonic, bip39Passwd, encryptPasswd, hdPath string, algo SigningAlgo,
+	name, mnemonic, bip39Passwd, hdPath string, algo SigningAlgo,
 ) (Info, error) {
 
-	return kb.base.CreateAccount(kb, name, mnemonic, bip39Passwd, encryptPasswd, hdPath, algo)
+	return kb.base.CreateAccount(kb, name, mnemonic, bip39Passwd, hdPath, algo)
 }
 
 // CreateLedger creates a new locally-stored reference to a Ledger keypair.

@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/crypto"
 	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
 	"github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type (
@@ -151,7 +152,7 @@ func (kb baseKeybase) DecodeSignature(info Info, msg []byte) (sig []byte, pub tm
 
 // CreateAccount creates an account Info object.
 func (kb baseKeybase) CreateAccount(
-	keyWriter keyWriter, name, mnemonic, bip39Passphrase, encryptPasswd, hdPath string, algo SigningAlgo,
+	keyWriter keyWriter, name, mnemonic, bip39Passphrase, hdPath string, algo SigningAlgo,
 ) (Info, error) {
 
 	// create master key and derive first key for keyring
@@ -165,10 +166,17 @@ func (kb baseKeybase) CreateAccount(
 		return nil, err
 	}
 
+	// check if the a key already exists with the same address and return an error
+	// if found
+	address := sdk.AccAddress(privKey.PubKey().Address())
+	if _, err := ks.KeyByAddress(address); err == nil {
+		return nil, fmt.Errorf("account with address %s already exists in keyring, delete the key first if you want to recreate it", address)
+	}
+
 	var info Info
 
 	if encryptPasswd != "" {
-		info = keyWriter.writeLocalKey(name, privKey, encryptPasswd, algo)
+		info = keyWriter.writeLocalKey(name, privKey, bip39Passphrase, algo)
 	} else {
 		info = kb.writeOfflineKey(keyWriter, name, privKey.PubKey(), algo)
 	}
@@ -222,7 +230,11 @@ func (kb baseKeybase) CreateMnemonic(
 		return nil, "", err
 	}
 
-	info, err = kb.CreateAccount(keyWriter, name, mnemonic, DefaultBIP39Passphrase, passwd, types.GetConfig().GetFullFundraiserPath(), algo)
+	if passwd == "" {
+		passwd = DefaultBIP39Passphrase
+	}
+
+	info, err = kb.CreateAccount(keyWriter, name, mnemonic, passwd, types.GetConfig().GetFullFundraiserPath(), algo)
 	if err != nil {
 		return nil, "", err
 	}

@@ -38,7 +38,7 @@ func Test_runListCmd(t *testing.T) {
 		mockIn.Reset("testpass1\ntestpass1\n")
 	}
 
-	_, err = kb.CreateAccount("something", tests.TestMnemonic, "", "", "", keys.Secp256k1)
+	_, err = kb.CreateAccount("something", tests.TestMnemonic, "", "", keys.Secp256k1)
 	require.NoError(t, err)
 
 	defer func() {

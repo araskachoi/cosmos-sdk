@@ -87,7 +87,7 @@ func (lkb lazyKeybase) CreateMnemonic(name string, language Language, passwd str
 	return newDBKeybase(db, lkb.options...).CreateMnemonic(name, language, passwd, algo)
 }
 
-func (lkb lazyKeybase) CreateAccount(name, mnemonic, bip39Passwd, encryptPasswd, hdPath string, algo SigningAlgo) (Info, error) {
+func (lkb lazyKeybase) CreateAccount(name, mnemonic, bip39Passwd, hdPath string, algo SigningAlgo) (Info, error) {
 	db, err := sdk.NewLevelDB(lkb.name, lkb.dir)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ func (lkb lazyKeybase) CreateAccount(name, mnemonic, bip39Passwd, encryptPasswd,
 	defer db.Close()
 
 	return newDBKeybase(db,
-		lkb.options...).CreateAccount(name, mnemonic, bip39Passwd, encryptPasswd, hdPath, algo)
+		lkb.options...).CreateAccount(name, mnemonic, bip39Passwd, hdPath, algo)
 }
 
 func (lkb lazyKeybase) CreateLedger(name string, algo SigningAlgo, hrp string, account, index uint32) (info Info, err error) {

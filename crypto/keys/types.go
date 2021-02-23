@@ -33,7 +33,7 @@ type Keybase interface {
 
 	// CreateAccount converts a mnemonic to a private key and BIP 32 HD Path
 	// and persists it, encrypted with the given password.
-	CreateAccount(name, mnemonic, bip39Passwd, encryptPasswd, hdPath string, algo SigningAlgo) (Info, error)
+	CreateAccount(name, mnemonic, bip39Passwd, hdPath string, algo SigningAlgo) (Info, error)
 
 	// CreateLedger creates, stores, and returns a new Ledger key reference
 	CreateLedger(name string, algo SigningAlgo, hrp string, account, index uint32) (info Info, err error)

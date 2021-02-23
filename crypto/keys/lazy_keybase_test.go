@@ -353,7 +353,7 @@ func TestLazySeedPhrase(t *testing.T) {
 
 	algo := Secp256k1
 	n1, n2 := "lost-key", "found-again"
-	p1, p2 := nums, foobar
+	p1 := nums
 
 	// make sure key works with initial password
 	info, mnemonic, err := kb.CreateMnemonic(n1, English, p1, algo)
@@ -370,7 +370,7 @@ func TestLazySeedPhrase(t *testing.T) {
 	// let us re-create it from the mnemonic-phrase
 	params := *hd.NewFundraiserParams(0, sdk.CoinType, 0)
 	hdPath := params.String()
-	newInfo, err := kb.CreateAccount(n2, mnemonic, DefaultBIP39Passphrase, p2, hdPath, algo)
+	newInfo, err := kb.CreateAccount(n2, mnemonic, DefaultBIP39Passphrase, hdPath, algo)
 	require.NoError(t, err)
 	require.Equal(t, n2, newInfo.GetName())
 	require.Equal(t, info.GetPubKey().Address(), newInfo.GetPubKey().Address())
