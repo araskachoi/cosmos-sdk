@@ -34,6 +34,7 @@ const (
 	flagNoSort      = "nosort"
 	flagHDPath      = "hd-path"
 	flagKeyAlgo     = "algo"
+	flagPassphrase  = "passphrase"
 
 	// DefaultKeyPass contains the default key password for genesis transactions
 	DefaultKeyPass = "12345678"
@@ -78,6 +79,7 @@ the flag --nosort is set.
 	cmd.Flags().Uint32(flagIndex, 0, "Address index number for HD derivation")
 	cmd.Flags().Bool(flags.FlagIndentResponse, false, "Add indent to JSON response")
 	cmd.Flags().String(flagKeyAlgo, string(keys.Secp256k1), "Key signing algorithm to generate keys for")
+	cmd.Flags().String(flagPassphrase, "", "Passphrase to pass without entering interactive mode.")
 	return cmd
 }
 
@@ -217,7 +219,7 @@ func RunAddCmd(cmd *cobra.Command, args []string, kb keys.Keybase, inBuf *bufio.
 
 	// Get bip39 mnemonic
 	var mnemonic string
-	var bip39Passphrase string
+	bip39Passphrase := viper.GetString(flagPassphrase)
 
 	if interactive || viper.GetBool(flagRecover) {
 		bip39Message := "Enter your bip39 mnemonic"
@@ -249,7 +251,7 @@ func RunAddCmd(cmd *cobra.Command, args []string, kb keys.Keybase, inBuf *bufio.
 	}
 
 	// override bip39 passphrase
-	if interactive {
+	if interactive && bip39Passphrase == "" {
 		bip39Passphrase, err = input.GetString(
 			"Enter your bip39 passphrase. This is combined with the mnemonic to derive the seed. "+
 				"Most users should just hit enter to use the default, \"\"", inBuf)
